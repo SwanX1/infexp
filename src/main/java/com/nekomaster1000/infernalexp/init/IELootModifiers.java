@@ -3,11 +3,11 @@ package com.nekomaster1000.infernalexp.init;
 import com.google.gson.JsonObject;
 import com.nekomaster1000.infernalexp.InfernalExpansion;
 import com.nekomaster1000.infernalexp.config.InfernalExpansionConfig;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -31,7 +31,7 @@ public class IELootModifiers {
          *
          * @param conditionsIn the ILootConditions that need to be matched before the loot is modified.
          */
-        protected HoglinLootModifier(ILootCondition[] conditionsIn) {
+        protected HoglinLootModifier(LootItemCondition[] conditionsIn) {
             super(conditionsIn);
         }
 
@@ -46,15 +46,15 @@ public class IELootModifiers {
             int numCookedChops = 0;
 
             for (ItemStack item : generatedLoot) {
-                if (item.isItemEqual(Items.PORKCHOP.getDefaultInstance())) {
+                if (item.sameItem(Items.PORKCHOP.getDefaultInstance())) {
                     numChops += item.getCount();
-                } else if (item.isItemEqual(Items.COOKED_PORKCHOP.getDefaultInstance())) {
+                } else if (item.sameItem(Items.COOKED_PORKCHOP.getDefaultInstance())) {
                     numCookedChops += item.getCount();
                 }
             }
 
-            generatedLoot.removeIf(x -> x.isItemEqual(Items.PORKCHOP.getDefaultInstance()));
-            generatedLoot.removeIf(x -> x.isItemEqual(Items.COOKED_PORKCHOP.getDefaultInstance()));
+            generatedLoot.removeIf(x -> x.sameItem(Items.PORKCHOP.getDefaultInstance()));
+            generatedLoot.removeIf(x -> x.sameItem(Items.COOKED_PORKCHOP.getDefaultInstance()));
             generatedLoot.add(new ItemStack(IEItems.COOKED_HOGCHOP.get(), numCookedChops));
             generatedLoot.add(new ItemStack(IEItems.RAW_HOGCHOP.get(), numChops));
 
@@ -65,7 +65,7 @@ public class IELootModifiers {
     private static class HoglinLootSerializer extends GlobalLootModifierSerializer<HoglinLootModifier> {
 
         @Override
-        public HoglinLootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] conditionsIn) {
+        public HoglinLootModifier read(ResourceLocation location, JsonObject object, LootItemCondition[] conditionsIn) {
             return new HoglinLootModifier(conditionsIn);
         }
 

@@ -6,11 +6,11 @@ import com.nekomaster1000.infernalexp.init.IEBlocks;
 import com.nekomaster1000.infernalexp.util.ShapeUtil;
 import com.nekomaster1000.infernalexp.world.gen.features.config.GlowSpikeFeatureConfig;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.List;
 import java.util.Random;
@@ -22,9 +22,9 @@ public class GlowSpikeFeature extends Feature<GlowSpikeFeatureConfig> {
 	}
 
 	@Override
-	public boolean generate(ISeedReader world, ChunkGenerator generator, Random random, BlockPos pos, GlowSpikeFeatureConfig config) {
+	public boolean place(WorldGenLevel world, ChunkGenerator generator, Random random, BlockPos pos, GlowSpikeFeatureConfig config) {
 
-		if ((world.isAirBlock(pos) || world.getBlockState(pos.down()).getBlock() == IEBlocks.GLOWDUST_SAND.get()) || (world.getBlockState(pos).getBlock() == Blocks.LAVA && world.getBlockState(pos.down()).getBlock() != Blocks.LAVA)) {
+		if ((world.isEmptyBlock(pos) || world.getBlockState(pos.below()).getBlock() == IEBlocks.GLOWDUST_SAND.get()) || (world.getBlockState(pos).getBlock() == Blocks.LAVA && world.getBlockState(pos.below()).getBlock() != Blocks.LAVA)) {
 			// Generate a random height, diameter and offset
 			int height = config.minHeight + random.nextInt(config.maxHeight - config.minHeight);
 			int diameter = config.minDiameter + random.nextInt(config.maxDiameter - config.minDiameter);
@@ -38,19 +38,19 @@ public class GlowSpikeFeature extends Feature<GlowSpikeFeatureConfig> {
 			for (BlockPos point : points) {
 				BlockPos pointPos = new BlockPos(pos.getX() + point.getX(), pos.getY(), pos.getZ() + point.getZ());
 
-				if (world.getBlockState(pointPos.down()).isAir()) {
+				if (world.getBlockState(pointPos.below()).isAir()) {
 					if (random.nextBoolean() && random.nextBoolean()) {
-						return generate(world, generator, random, pos.down(), config);
+						return place(world, generator, random, pos.below(), config);
 					}
 					return false;
-				} else if (world.getBlockState(pointPos.down()).getBlock() == Blocks.LAVA) {
-					return generate(world, generator, random, pos.down(), config);
+				} else if (world.getBlockState(pointPos.below()).getBlock() == Blocks.LAVA) {
+					return place(world, generator, random, pos.below(), config);
 				}
 			}
 
 			// Place lines from each point in base to the peak point
 			for (BlockPos point : points) {
-				placeGlowSpikeLine(world, pos.add(point.getX(), 0, point.getZ()), pos.add(xOffset, height, zOffset), random, config);
+				placeGlowSpikeLine(world, pos.offset(point.getX(), 0, point.getZ()), pos.offset(xOffset, height, zOffset), random, config);
 			}
 
 			return true;
@@ -59,14 +59,14 @@ public class GlowSpikeFeature extends Feature<GlowSpikeFeatureConfig> {
 		}
 	}
 
-	private void placeGlowSpikeLine(ISeedReader world, BlockPos startPos, BlockPos endPos, Random random, GlowSpikeFeatureConfig config) {
+	private void placeGlowSpikeLine(WorldGenLevel world, BlockPos startPos, BlockPos endPos, Random random, GlowSpikeFeatureConfig config) {
 		List<BlockPos> line = ShapeUtil.generateLine(startPos, endPos);
 
 		for (int i = 0; i < line.size(); i++) {
 			BlockPos pos = line.get(i);
 
 			// Skip parts of the spike generating above bedrock
-			if (pos.getY() >= 128 || world.getBlockState(pos).equals(Blocks.BEDROCK.getDefaultState())) {
+			if (pos.getY() >= 128 || world.getBlockState(pos).equals(Blocks.BEDROCK.defaultBlockState())) {
 				continue;
 			}
 
@@ -79,16 +79,16 @@ public class GlowSpikeFeature extends Feature<GlowSpikeFeatureConfig> {
 			// darkAtTop is true
 			if (percentage <= 0.33) {
 				if (config.darkAtTop)
-					world.setBlockState(pos, Blocks.GLOWSTONE.getDefaultState(), 2);
+					world.setBlock(pos, Blocks.GLOWSTONE.defaultBlockState(), 2);
 				else
-					world.setBlockState(new BlockPos(pos), IEBlocks.DULLSTONE.get().getDefaultState(), 2);
+					world.setBlock(new BlockPos(pos), IEBlocks.DULLSTONE.get().defaultBlockState(), 2);
 			} else if (percentage > 0.33 && percentage <= 0.66) {
-				world.setBlockState(new BlockPos(pos), IEBlocks.DIMSTONE.get().getDefaultState(), 2);
+				world.setBlock(new BlockPos(pos), IEBlocks.DIMSTONE.get().defaultBlockState(), 2);
 			} else {
 				if (config.darkAtTop)
-					world.setBlockState(new BlockPos(pos), IEBlocks.DULLSTONE.get().getDefaultState(), 2);
+					world.setBlock(new BlockPos(pos), IEBlocks.DULLSTONE.get().defaultBlockState(), 2);
 				else
-					world.setBlockState(new BlockPos(pos), Blocks.GLOWSTONE.getDefaultState(), 2);
+					world.setBlock(new BlockPos(pos), Blocks.GLOWSTONE.defaultBlockState(), 2);
 			}
 		}
 	}

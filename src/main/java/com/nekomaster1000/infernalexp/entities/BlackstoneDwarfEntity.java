@@ -3,28 +3,28 @@ package com.nekomaster1000.infernalexp.entities;
 import com.nekomaster1000.infernalexp.config.InfernalExpansionConfig;
 import com.nekomaster1000.infernalexp.init.IESoundEvents;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.monster.ZombifiedPiglinEntity;
-import net.minecraft.entity.monster.piglin.AbstractPiglinEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.RangedInteger;
-import net.minecraft.util.TickRangeConverter;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
+import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.util.IntRange;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,42 +34,42 @@ import java.util.UUID;
 
 //import net.minecraft.entity.projectile.ArrowEntity;
 
-public class BlackstoneDwarfEntity extends CreatureEntity implements IAngerable {
-	private static final RangedInteger RANGED_INT = TickRangeConverter.convertRange(20, 39);
+public class BlackstoneDwarfEntity extends PathfinderMob implements NeutralMob {
+	private static final IntRange RANGED_INT = TimeUtil.rangeOfSeconds(20, 39);
 	private int attackTimer;
 	private int angerTime;
 	private UUID angerTarget;
 
-	public BlackstoneDwarfEntity(EntityType<? extends CreatureEntity> type, World worldIn) {
+	public BlackstoneDwarfEntity(EntityType<? extends PathfinderMob> type, Level worldIn) {
 		super(type, worldIn);
 	}
 
 	// ATTRIBUTES
-	public static AttributeModifierMap.MutableAttribute setCustomAttributes() {
-		return MobEntity.func_233666_p_()
-            .createMutableAttribute(Attributes.MAX_HEALTH, 40.0D)
-            .createMutableAttribute(Attributes.ATTACK_DAMAGE, 10.0D)
-            .createMutableAttribute(Attributes.ATTACK_KNOCKBACK, 2.0D)
-            .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 2.0D)
-            .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.40D);
+	public static AttributeSupplier.Builder setCustomAttributes() {
+		return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 40.0D)
+            .add(Attributes.ATTACK_DAMAGE, 10.0D)
+            .add(Attributes.ATTACK_KNOCKBACK, 2.0D)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 2.0D)
+            .add(Attributes.MOVEMENT_SPEED, 0.40D);
 		// .createMutableAttribute(Attributes.FOLLOW_RANGE, 20.0D);
 	}
 
 	// ---
 	// Retaliating
 	@OnlyIn(Dist.CLIENT)
-	public void handleStatusUpdate(byte id) {
+	public void handleEntityEvent(byte id) {
 		if (id == 4) {
 			this.attackTimer = 10;
 			this.playSound(IESoundEvents.BASALT_GIANT_DEATH.get(), 1.0F, 1.0F);
 		} else {
-			super.handleStatusUpdate(id);
+			super.handleEntityEvent(id);
 		}
 
 	}
 
-	public void livingTick() {
-		super.livingTick();
+	public void aiStep() {
+		super.aiStep();
 		if (this.attackTimer > 0) {
 			--this.attackTimer;
 		}
@@ -80,27 +80,27 @@ public class BlackstoneDwarfEntity extends CreatureEntity implements IAngerable 
 		return this.attackTimer;
 	}
 
-	public boolean attackEntityAsMob(Entity entityIn) {
+	public boolean doHurtTarget(Entity entityIn) {
 		this.attackTimer = 10;
-		this.world.setEntityState(this, (byte) 4);
+		this.level.broadcastEntityEvent(this, (byte) 4);
         boolean disableShield = false;
 		float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-		float f1 = (int) f > 0 ? f / 2.0F + (float) this.rand.nextInt((int) f) : f;
+		float f1 = (int) f > 0 ? f / 2.0F + (float) this.random.nextInt((int) f) : f;
 		float f2 = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
 
-		if (entityIn instanceof PlayerEntity && ((PlayerEntity) entityIn).getActiveItemStack().isShield((PlayerEntity) entityIn)) {
+		if (entityIn instanceof Player && ((Player) entityIn).getUseItem().isShield((Player) entityIn)) {
 			attackFling(entityIn, f2 * 3, 2.0);
-			entityIn.velocityChanged = true;
+			entityIn.hurtMarked = true;
 			disableShield = true;
 		}
 
-		boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f1);
+		boolean flag = entityIn.hurt(DamageSource.mobAttack(this), f1);
 
 		if (flag) {
 			attackFling(entityIn, f2, 0.6);
 		}
 		if (disableShield) {
-		    ((PlayerEntity) entityIn).disableShield(true);
+		    ((Player) entityIn).disableShield(true);
         }
 
 		this.playSound(IESoundEvents.BASALT_GIANT_HURT.get(), 1.0F, 1.0F);
@@ -108,9 +108,9 @@ public class BlackstoneDwarfEntity extends CreatureEntity implements IAngerable 
 	}
 
 	private void attackFling(Entity entityIn, float f2, double height) {
-		((LivingEntity) entityIn).applyKnockback(f2, MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)));
-		entityIn.setMotion(entityIn.getMotion().add(0.0D, height, 0.0D));
-		this.applyEnchantments(this, entityIn);
+		((LivingEntity) entityIn).knockback(f2, Mth.sin(this.yRot * ((float) Math.PI / 180F)), -Mth.cos(this.yRot * ((float) Math.PI / 180F)));
+		entityIn.setDeltaMovement(entityIn.getDeltaMovement().add(0.0D, height, 0.0D));
+		this.doEnchantDamageEffects(this, entityIn);
 	}
 
 	/*
@@ -126,18 +126,18 @@ public class BlackstoneDwarfEntity extends CreatureEntity implements IAngerable 
 	protected void registerGoals() {
 		super.registerGoals();
 		this.goalSelector.addGoal(0, new MeleeAttackGoal(this, 0.6D, true));
-		this.goalSelector.addGoal(1, new WaterAvoidingRandomWalkingGoal(this, 0.5d));
-		this.goalSelector.addGoal(2, new LookAtGoal(this, PlayerEntity.class, 8.0f));
-		this.goalSelector.addGoal(3, new LookRandomlyGoal(this));
+		this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.5d));
+		this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0f));
+		this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         if (InfernalExpansionConfig.MobInteractions.DWARF_ATTACK_PIGLIN.getBoolean()) {
-            this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, AbstractPiglinEntity.class, true, false));
+            this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, AbstractPiglin.class, true, false));
         }
         if (InfernalExpansionConfig.MobInteractions.DWARF_ATTACK_ZOMBIE_PIGLIN.getBoolean()) {
-            this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ZombifiedPiglinEntity.class, true, false));
+            this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ZombifiedPiglin.class, true, false));
         }
         if (InfernalExpansionConfig.MobInteractions.DWARF_ATTACK_PLAYER.getBoolean()) {
-            this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+            this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
         }
         if (InfernalExpansionConfig.MobInteractions.GLOWSQUITO_ATTACK_DWARF.getBoolean()) {
             this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, GlowsquitoEntity.class, true));
@@ -146,37 +146,37 @@ public class BlackstoneDwarfEntity extends CreatureEntity implements IAngerable 
 
 	// EXP POINTS
 	@Override
-	protected int getExperiencePoints(PlayerEntity player) {
-		return 2 + this.world.rand.nextInt(2);
+	protected int getExperienceReward(Player player) {
+		return 2 + this.level.random.nextInt(2);
 	}
 
-	public boolean isImmuneToFire() {
+	public boolean fireImmune() {
 		return true;
 	}
 
 	@Override
-	public int getAngerTime() {
+	public int getRemainingPersistentAngerTime() {
 		return this.angerTime;
 	}
 
 	@Override
-	public void setAngerTime(int time) {
+	public void setRemainingPersistentAngerTime(int time) {
 		this.angerTime = time;
 	}
 
 	@Nullable
 	@Override
-	public UUID getAngerTarget() {
+	public UUID getPersistentAngerTarget() {
 		return this.angerTarget;
 	}
 
 	@Override
-	public void setAngerTarget(@Nullable UUID target) {
+	public void setPersistentAngerTarget(@Nullable UUID target) {
 		this.angerTarget = target;
 	}
 
 	@Override
-	public void func_230258_H__() {
-		this.setAngerTime(RANGED_INT.getRandomWithinRange(this.rand));
+	public void startPersistentAngerTimer() {
+		this.setRemainingPersistentAngerTime(RANGED_INT.randomValue(this.random));
 	}
 }

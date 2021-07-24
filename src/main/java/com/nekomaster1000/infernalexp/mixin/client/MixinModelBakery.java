@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import com.nekomaster1000.infernalexp.access.FireTypeAccess;
 
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.Material;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,7 +21,7 @@ public class MixinModelBakery {
 
 	@Shadow
 	@Final
-	protected static Set<RenderMaterial> LOCATIONS_BUILTIN_TEXTURES;
+	protected static Set<Material> LOCATIONS_BUILTIN_TEXTURES;
 
 	static {
 		LOCATIONS_BUILTIN_TEXTURES.add(FireTypeAccess.LOCATION_SOUL_FIRE_0);

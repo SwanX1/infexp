@@ -1,7 +1,7 @@
 package com.nekomaster1000.infernalexp.brewing;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 
 public class IEBrewingRecipe implements IBrewingRecipe {
@@ -18,13 +18,13 @@ public class IEBrewingRecipe implements IBrewingRecipe {
 
     @Override
     public boolean isInput(ItemStack input) {
-        return input.isItemEqual(this.input) &&
-                PotionUtils.getPotionFromItem(input).equals(PotionUtils.getPotionFromItem(this.input));
+        return input.sameItem(this.input) &&
+                PotionUtils.getPotion(input).equals(PotionUtils.getPotion(this.input));
     }
 
     @Override
     public boolean isIngredient(ItemStack ingredient) {
-        return ingredient.isItemEqual(this.ingredient);
+        return ingredient.sameItem(this.ingredient);
     }
 
     @Override

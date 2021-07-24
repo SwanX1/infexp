@@ -1,13 +1,13 @@
 package com.nekomaster1000.infernalexp.capabilities;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-public class SerializableCapabilityProvider<H> extends SimpleCapabilityProvider<H> implements INBTSerializable<INBT> {
+public class SerializableCapabilityProvider<H> extends SimpleCapabilityProvider<H> implements INBTSerializable<Tag> {
 
     public SerializableCapabilityProvider(Capability<H> capability, @Nullable Direction facing) {
         this(capability, facing, capability.getDefaultInstance());
@@ -18,7 +18,7 @@ public class SerializableCapabilityProvider<H> extends SimpleCapabilityProvider<
     }
 
     @Override
-    public INBT serializeNBT() {
+    public Tag serializeNBT() {
         final H instance = getInstance();
 
         if (instance == null) {
@@ -29,7 +29,7 @@ public class SerializableCapabilityProvider<H> extends SimpleCapabilityProvider<
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
+    public void deserializeNBT(Tag nbt) {
         final H instance = getInstance();
 
         if (instance == null) {

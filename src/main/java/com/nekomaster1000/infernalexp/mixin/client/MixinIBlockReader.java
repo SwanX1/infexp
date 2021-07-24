@@ -6,11 +6,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import com.nekomaster1000.infernalexp.client.DynamicLightingHandler;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
-@Mixin(value = IBlockReader.class, priority = 200)
+@Mixin(value = BlockGetter.class, priority = 200)
 public interface MixinIBlockReader {
 
 	@Overwrite
@@ -18,7 +18,7 @@ public interface MixinIBlockReader {
 		if (DynamicLightingHandler.LIGHT_SOURCES.containsKey(pos) && DynamicLightingHandler.LIGHT_SOURCES.get(pos).shouldKeep) {
 			return 10;
 		}
-		return this.getBlockState(pos).getLightValue((IBlockReader) this, pos);
+		return this.getBlockState(pos).getLightValue((BlockGetter) this, pos);
 	}
 
 	@Shadow

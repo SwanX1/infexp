@@ -2,8 +2,8 @@ package com.nekomaster1000.infernalexp.network;
 
 import com.nekomaster1000.infernalexp.InfernalExpansion;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -25,7 +25,7 @@ public class IENetworkHandler {
         INSTANCE.messageBuilder(SpawnInfernalPaintingPacket.class, index++).encoder(SpawnInfernalPaintingPacket::encode).decoder(SpawnInfernalPaintingPacket::decode).consumer(SpawnInfernalPaintingPacket::handle).add();
     }
 
-	public static <MSG> void sendToPlayer(MSG message, ServerPlayerEntity player) {
+	public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
 		INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
 	}
 

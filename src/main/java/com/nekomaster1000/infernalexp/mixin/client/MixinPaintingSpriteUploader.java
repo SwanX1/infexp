@@ -2,9 +2,9 @@ package com.nekomaster1000.infernalexp.mixin.client;
 
 import com.nekomaster1000.infernalexp.client.entity.render.InfernalPaintingRenderer;
 
-import net.minecraft.client.renderer.texture.PaintingSpriteUploader;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.resources.PaintingTextureManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.stream.Stream;
 
-@Mixin(PaintingSpriteUploader.class)
+@Mixin(PaintingTextureManager.class)
 public class MixinPaintingSpriteUploader {
 
 	@Shadow

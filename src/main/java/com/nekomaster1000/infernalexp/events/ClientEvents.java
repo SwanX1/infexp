@@ -18,10 +18,10 @@ import com.nekomaster1000.infernalexp.util.ModSpawnEggItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.entity.SpriteRenderer;
-import net.minecraft.client.renderer.tileentity.CampfireTileEntityRenderer;
-import net.minecraft.entity.EntityType;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.blockentity.CampfireRenderer;
+import net.minecraft.world.entity.EntityType;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.RegistryEvent;
@@ -47,35 +47,35 @@ public class ClientEvents {
         //RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.PYRNO.get(), PyrnoRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.BLINDSIGHT.get(), BlindsightRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.GLOWSILK_MOTH.get(), GlowsilkMothRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.ASCUS_BOMB.get(), manager -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.THROWABLE_MAGMA_CREAM.get(), manager -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
-        RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.THROWABLE_FIRE_CHARGE.get(), manager -> new SpriteRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
+        RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.ASCUS_BOMB.get(), manager -> new ThrownItemRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
+        RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.THROWABLE_MAGMA_CREAM.get(), manager -> new ThrownItemRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
+        RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.THROWABLE_FIRE_CHARGE.get(), manager -> new ThrownItemRenderer<>(manager, Minecraft.getInstance().getItemRenderer()));
 		RenderingRegistry.registerEntityRenderingHandler(IEEntityTypes.INFERNAL_PAINTING.get(), InfernalPaintingRenderer::new);
 
-		ClientRegistry.bindTileEntityRenderer(IETileEntityTypes.GLOW_CAMPFIRE.get(), CampfireTileEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileEntityTypes.GLOW_CAMPFIRE.get(), CampfireRenderer::new);
 
-		RenderTypeLookup.setRenderLayer(IEBlocks.LUMINOUS_FUNGUS.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(IEBlocks.DULLTHORNS.get(), RenderType.getCutout());
+		ItemBlockRenderTypes.setRenderLayer(IEBlocks.LUMINOUS_FUNGUS.get(), RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(IEBlocks.DULLTHORNS.get(), RenderType.cutout());
 
-		RenderTypeLookup.setRenderLayer(IEBlocks.POTTED_LUMINOUS_FUNGUS.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(IEBlocks.POTTED_DULLTHORNS.get(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(IEBlocks.POTTED_SHROOMLIGHT_FUNGUS.get(), RenderType.getCutout());
+		ItemBlockRenderTypes.setRenderLayer(IEBlocks.POTTED_LUMINOUS_FUNGUS.get(), RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(IEBlocks.POTTED_DULLTHORNS.get(), RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(IEBlocks.POTTED_SHROOMLIGHT_FUNGUS.get(), RenderType.cutout());
 
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_TORCH.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_TORCH_WALL.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_CAMPFIRE.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_LANTERN.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_FIRE.get(), RenderType.getCutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_TORCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_TORCH_WALL.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_CAMPFIRE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_LANTERN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_FIRE.get(), RenderType.cutout());
 
-        RenderTypeLookup.setRenderLayer(IEBlocks.SHROOMLIGHT_FUNGUS.get(), RenderType.getCutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.SHROOMLIGHT_FUNGUS.get(), RenderType.cutout());
 
-        RenderTypeLookup.setRenderLayer(IEBlocks.BURIED_BONE.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.PLANTED_QUARTZ.get(), RenderType.getCutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.BURIED_BONE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.PLANTED_QUARTZ.get(), RenderType.cutout());
 
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_GLASS.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.GLOW_GLASS_PANE.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.QUARTZ_GLASS.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(IEBlocks.QUARTZ_GLASS_PANE.get(), RenderType.getCutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_GLASS.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.GLOW_GLASS_PANE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.QUARTZ_GLASS.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(IEBlocks.QUARTZ_GLASS_PANE.get(), RenderType.cutout());
     }
 
 

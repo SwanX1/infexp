@@ -4,11 +4,11 @@ import com.nekomaster1000.infernalexp.InfernalExpansion;
 import com.nekomaster1000.infernalexp.items.WhipItem;
 import com.nekomaster1000.infernalexp.util.InjectionUtil;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -31,8 +31,8 @@ public class WhipUpdateCapability {
         CapabilityManager.INSTANCE.register(IWhipUpdate.class, new Capability.IStorage<IWhipUpdate>() {
 
             @Override
-            public INBT writeNBT(Capability<IWhipUpdate> capability, IWhipUpdate instance, Direction side) {
-                CompoundNBT nbt = new CompoundNBT();
+            public Tag writeNBT(Capability<IWhipUpdate> capability, IWhipUpdate instance, Direction side) {
+                CompoundTag nbt = new CompoundTag();
 
                 nbt.putInt("TicksSinceAttack", instance.getTicksSinceAttack());
                 nbt.putBoolean("Attacking", instance.getAttacking());
@@ -42,8 +42,8 @@ public class WhipUpdateCapability {
             }
 
             @Override
-            public void readNBT(Capability<IWhipUpdate> capability, IWhipUpdate instance, Direction side, INBT inbt) {
-                CompoundNBT nbt = (CompoundNBT) inbt;
+            public void readNBT(Capability<IWhipUpdate> capability, IWhipUpdate instance, Direction side, Tag inbt) {
+                CompoundTag nbt = (CompoundTag) inbt;
 
                 instance.setTicksSinceAttack(nbt.getInt("TicksSinceAttack"));
                 instance.setAttacking(nbt.getBoolean("Attacking"));

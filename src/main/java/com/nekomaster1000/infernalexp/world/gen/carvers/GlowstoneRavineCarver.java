@@ -10,29 +10,29 @@ import com.mojang.serialization.Codec;
 
 import com.nekomaster1000.infernalexp.init.IEBlocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.carver.CanyonWorldCarver;
-import net.minecraft.world.gen.feature.ProbabilityConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.carver.CanyonWorldCarver;
+import net.minecraft.world.level.levelgen.feature.configurations.ProbabilityFeatureConfiguration;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class GlowstoneRavineCarver extends CanyonWorldCarver {
 
-    public GlowstoneRavineCarver(Codec<ProbabilityConfig> p_i231916_1_) {
+    public GlowstoneRavineCarver(Codec<ProbabilityFeatureConfiguration> p_i231916_1_) {
         super(p_i231916_1_);
-        this.carvableBlocks = ImmutableSet.of(Blocks.BLACKSTONE, Blocks.GLOWSTONE, IEBlocks.DULLSTONE.get(), IEBlocks.DIMSTONE.get(), IEBlocks.GLOWDUST_SAND.get(), IEBlocks.GLOWDUST_STONE.get(), IEBlocks.GLOWDUST.get(), IEBlocks.CRUMBLING_BLACKSTONE.get());
+        this.replaceableBlocks = ImmutableSet.of(Blocks.BLACKSTONE, Blocks.GLOWSTONE, IEBlocks.DULLSTONE.get(), IEBlocks.DIMSTONE.get(), IEBlocks.GLOWDUST_SAND.get(), IEBlocks.GLOWDUST_STONE.get(), IEBlocks.GLOWDUST.get(), IEBlocks.CRUMBLING_BLACKSTONE.get());
     }
 
     private final float[] heightToHorizontalStretchFactor = new float[256];
 
     @Override
-    public boolean carveRegion(IChunk chunk, Function<BlockPos, Biome> biomePos, Random random, int seaLevel, int chunkXOffset, int chunkZOffset, int chunkX, int chunkZ, BitSet carvingMask, ProbabilityConfig config) {
+    public boolean carve(ChunkAccess chunk, Function<BlockPos, Biome> biomePos, Random random, int seaLevel, int chunkXOffset, int chunkZOffset, int chunkX, int chunkZ, BitSet carvingMask, ProbabilityFeatureConfiguration config) {
         // Generate length, width, position, yaw and pitch
-        int ravineLength = (this.func_222704_c() * 2 - 1) * 16;
+        int ravineLength = (this.getRange() * 2 - 1) * 16;
 
         double x = chunkXOffset * 16 + random.nextInt(16);
         double z = chunkZOffset * 16 + random.nextInt(16);
@@ -48,7 +48,7 @@ public class GlowstoneRavineCarver extends CanyonWorldCarver {
         return true;
     }
 
-    private void carveRavine(IChunk chunk, Function<BlockPos, Biome> biomePos, long seed, int seaLevel, int chunkX, int chunkZ, double x, double y, double z, float width, float yaw, float pitch, int branchStartIndex, int branchCount, double yawMultiplier, BitSet p_227204_21_) {
+    private void carveRavine(ChunkAccess chunk, Function<BlockPos, Biome> biomePos, long seed, int seaLevel, int chunkX, int chunkZ, double x, double y, double z, float width, float yaw, float pitch, int branchStartIndex, int branchCount, double yawMultiplier, BitSet p_227204_21_) {
         Random random = new Random(seed);
         float stretch = 1.0F;
 
@@ -64,18 +64,18 @@ public class GlowstoneRavineCarver extends CanyonWorldCarver {
         float pitchChange = 0.0F;
 
         for(int i = branchStartIndex; i < branchCount; i++) {
-            double scaledYaw = 1.5D + (double)(MathHelper.sin((float)i * 3.1415927F / (float)branchCount) * width);
+            double scaledYaw = 1.5D + (double)(Mth.sin((float)i * 3.1415927F / (float)branchCount) * width);
             double scaledPitch = scaledYaw * yawMultiplier;
 
             scaledYaw *= (double)random.nextFloat() * 0.25D + 0.75D;
             scaledPitch *= (double)random.nextFloat() * 0.25D + 0.75D;
 
-            float deltaXZ = MathHelper.cos(pitch);
-            float deltaY = MathHelper.sin(pitch);
+            float deltaXZ = Mth.cos(pitch);
+            float deltaY = Mth.sin(pitch);
 
-            x += MathHelper.cos(yaw) * deltaXZ;
+            x += Mth.cos(yaw) * deltaXZ;
             y += deltaY;
-            z += MathHelper.sin(yaw) * deltaXZ;
+            z += Mth.sin(yaw) * deltaXZ;
 
             pitch *= 0.7F;
             pitch += pitchChange * 0.05F;
@@ -86,26 +86,26 @@ public class GlowstoneRavineCarver extends CanyonWorldCarver {
             yawChange += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 4.0F;
 
             if (random.nextInt(4) != 0) {
-                if (!this.func_222702_a(chunkX, chunkZ, x, z, i, branchCount, width)) {
+                if (!this.canReach(chunkX, chunkZ, x, z, i, branchCount, width)) {
                     return;
                 }
 
-                this.func_227208_a_(chunk, biomePos, seed, seaLevel, chunkX, chunkZ, x, y, z, scaledYaw, scaledPitch, p_227204_21_);
+                this.carveSphere(chunk, biomePos, seed, seaLevel, chunkX, chunkZ, x, y, z, scaledYaw, scaledPitch, p_227204_21_);
             }
         }
     }
 
     @Override
-    protected boolean func_222708_a(double scaledRelativeX, double scaledRelativeY, double scaledRelativeZ, int y) {
+    protected boolean skip(double scaledRelativeX, double scaledRelativeY, double scaledRelativeZ, int y) {
         return (scaledRelativeX * scaledRelativeX + scaledRelativeZ * scaledRelativeZ) * (double) this.heightToHorizontalStretchFactor[y - 1] + scaledRelativeY * scaledRelativeY / 6.0 >= 1.0;
     }
 
-    private double findYPos(IChunk chunk, Random random, double x, double z) {
+    private double findYPos(ChunkAccess chunk, Random random, double x, double z) {
         for (int yCheck = 0; yCheck < 128; yCheck++) {
 
             // If there are multiple levels in current part of biome, add some randomness to which level the ravine generates on with a bias towards generating on the bottom levels
             if (random.nextInt(3) != 0) {
-                if (chunk.getBlockState(new BlockPos(x, yCheck, z)) == IEBlocks.GLOWDUST_SAND.get().getDefaultState()) {
+                if (chunk.getBlockState(new BlockPos(x, yCheck, z)) == IEBlocks.GLOWDUST_SAND.get().defaultBlockState()) {
                     return yCheck - 5;
                 }
             }
@@ -118,17 +118,17 @@ public class GlowstoneRavineCarver extends CanyonWorldCarver {
     /**
      * Ripped from NetherCarver so that this ravine does not create floating lava in the nether.
      */
-    protected boolean carveBlock(IChunk chunk, Function<BlockPos, Biome> p_230358_2_, BitSet carvingMask, Random rand, BlockPos.Mutable mutableBlockPos, BlockPos.Mutable p_230358_6_, BlockPos.Mutable p_230358_7_, int p_230358_8_, int p_230358_9_, int p_230358_10_, int posX, int posZ, int posX2, int posY, int posZ2, MutableBoolean isSurface) {
+    protected boolean carveBlock(ChunkAccess chunk, Function<BlockPos, Biome> p_230358_2_, BitSet carvingMask, Random rand, BlockPos.MutableBlockPos mutableBlockPos, BlockPos.MutableBlockPos p_230358_6_, BlockPos.MutableBlockPos p_230358_7_, int p_230358_8_, int p_230358_9_, int p_230358_10_, int posX, int posZ, int posX2, int posY, int posZ2, MutableBoolean isSurface) {
         int maskIndex = posX2 | posZ2 << 4 | posY << 8;
         if (carvingMask.get(maskIndex)) {
             return false;
         } else {
             carvingMask.set(maskIndex);
-            mutableBlockPos.setPos(posX, posY, posZ);
-            if (this.isCarvable(chunk.getBlockState(mutableBlockPos))) {
+            mutableBlockPos.set(posX, posY, posZ);
+            if (this.canReplaceBlock(chunk.getBlockState(mutableBlockPos))) {
                 BlockState blockstate;
                 if (posY <= 31) {
-                    blockstate = LAVA.getBlockState();
+                    blockstate = LAVA.createLegacyBlock();
                 } else {
                     blockstate = CAVE_AIR;
                 }

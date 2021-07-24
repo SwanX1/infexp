@@ -2,10 +2,10 @@ package com.nekomaster1000.infernalexp.init;
 
 import com.nekomaster1000.infernalexp.InfernalExpansion;
 
-import net.minecraft.block.SoundType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.common.util.ForgeSoundType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -112,8 +112,8 @@ public class IESoundEvents {
 
 	// SOUND TYPES
 	public static final SoundType DULLSTONE_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> DULLSTONE_BREAK.get(), () -> DULLSTONE_STEP.get(), () -> DULLSTONE_PLACE.get(), () -> DULLSTONE_HIT.get(), () -> DULLSTONE_FALL.get());
-	public static final SoundType DIMSTONE_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SoundEvents.BLOCK_GLASS_BREAK, () -> DULLSTONE_STEP.get(), () -> SoundEvents.BLOCK_GLASS_PLACE, () -> SoundEvents.BLOCK_GLASS_HIT, () -> SoundEvents.BLOCK_GLASS_FALL);
-    public static final SoundType SOUL_STONE_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SOUL_STONE_BREAK.get(), () -> SoundEvents.BLOCK_SOUL_SOIL_STEP, () -> SoundEvents.BLOCK_SOUL_SOIL_PLACE, () -> SoundEvents.BLOCK_SOUL_SOIL_HIT, () -> SoundEvents.BLOCK_SOUL_SOIL_FALL);
+	public static final SoundType DIMSTONE_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SoundEvents.GLASS_BREAK, () -> DULLSTONE_STEP.get(), () -> SoundEvents.GLASS_PLACE, () -> SoundEvents.GLASS_HIT, () -> SoundEvents.GLASS_FALL);
+    public static final SoundType SOUL_STONE_TYPE = new ForgeSoundType(1.0F, 1.0F, () -> SOUL_STONE_BREAK.get(), () -> SoundEvents.SOUL_SOIL_STEP, () -> SoundEvents.SOUL_SOIL_PLACE, () -> SoundEvents.SOUL_SOIL_HIT, () -> SoundEvents.SOUL_SOIL_FALL);
 
     public static final RegistryObject<SoundEvent> add(String id) {
 		ResourceLocation realId = new ResourceLocation(InfernalExpansion.MOD_ID, id);

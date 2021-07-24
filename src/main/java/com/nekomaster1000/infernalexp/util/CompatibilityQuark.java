@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import com.nekomaster1000.infernalexp.InfernalExpansion;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;

@@ -1,10 +1,10 @@
 package com.nekomaster1000.infernalexp.world.biome;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeAmbience;
-import net.minecraft.world.biome.BiomeGenerationSettings;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.surfacebuilders.ConfiguredSurfaceBuilder;
 
 public abstract class ModBiome {
 
@@ -12,7 +12,7 @@ public abstract class ModBiome {
      * Method to configure category
      * @return Category for biome to use
      */
-    protected abstract Biome.Category configureCategory();
+    protected abstract Biome.BiomeCategory configureCategory();
 
     /**
      * Method to configure depth value
@@ -29,12 +29,12 @@ public abstract class ModBiome {
     /**
      * Method to configure ambience settings
      */
-    protected abstract void configureAmbience(BiomeAmbience.Builder ambience);
+    protected abstract void configureAmbience(BiomeSpecialEffects.Builder ambience);
 
     /**
      * Method to configure climate settings
      */
-    protected abstract Biome.Climate configureClimate();
+    protected abstract Biome.ClimateSettings configureClimate();
 
     /**
      * Method to configure surface builder
@@ -49,7 +49,7 @@ public abstract class ModBiome {
     /**
      * Method to configure mob spawn settings
      */
-    protected abstract void configureSpawns(MobSpawnInfo.Builder spawns);
+    protected abstract void configureSpawns(MobSpawnSettings.Builder spawns);
 
     /**
      * Builds the biome
@@ -57,34 +57,34 @@ public abstract class ModBiome {
      */
     public final Biome build() {
 
-        Biome.Builder builder = new Biome.Builder();
+        Biome.BiomeBuilder builder = new Biome.BiomeBuilder();
 
-        builder.category(this.configureCategory());
+        builder.biomeCategory(this.configureCategory());
         builder.depth(this.configureDepth());
         builder.scale(this.configureScale());
 
         // Configure biome ambience
-        BiomeAmbience.Builder ambience = new BiomeAmbience.Builder();
+        BiomeSpecialEffects.Builder ambience = new BiomeSpecialEffects.Builder();
         this.configureAmbience(ambience);
-        builder.setEffects(ambience.build());
+        builder.specialEffects(ambience.build());
 
         // Configure biome climate
-        Biome.Climate climate = configureClimate();
+        Biome.ClimateSettings climate = configureClimate();
         builder.precipitation(climate.precipitation);
         builder.temperature(climate.temperature);
-        builder.withTemperatureModifier(climate.temperatureModifier);
+        builder.temperatureAdjustment(climate.temperatureModifier);
         builder.downfall(climate.downfall);
 
         // Configure biome generation settings
         BiomeGenerationSettings.Builder generation = new BiomeGenerationSettings.Builder();
         this.configureGeneration(generation);
-        generation.withSurfaceBuilder(this.configureSurfaceBuilder());
-        builder.withGenerationSettings(generation.build());
+        generation.surfaceBuilder(this.configureSurfaceBuilder());
+        builder.generationSettings(generation.build());
 
         // Configure biome mob spawn settings
-        MobSpawnInfo.Builder spawns = new MobSpawnInfo.Builder();
+        MobSpawnSettings.Builder spawns = new MobSpawnSettings.Builder();
         this.configureSpawns(spawns);
-		builder.withMobSpawnSettings(spawns.build());
+		builder.mobSpawnSettings(spawns.build());
 
         return builder.build();
     }

@@ -10,26 +10,26 @@ import com.mojang.serialization.Codec;
 import com.nekomaster1000.infernalexp.init.IEBlocks;
 import com.nekomaster1000.infernalexp.util.ShapeUtil;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 // This has been replaced GlowstoneRavineCarver because of the size limitation of features
 
 @Deprecated
-public class GlowstoneRavineFeature extends Feature<NoFeatureConfig> {
-    public GlowstoneRavineFeature(Codec<NoFeatureConfig> codec) {
+public class GlowstoneRavineFeature extends Feature<NoneFeatureConfiguration> {
+    public GlowstoneRavineFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
 
     @Override
-    public boolean generate(ISeedReader world, ChunkGenerator generator, Random random, BlockPos pos, NoFeatureConfig config) {
-        BlockPos endPos = pos.add((40 + random.nextInt(20)) * (random.nextInt(2) == 0 ? -1 : 1), 0, (40 + random.nextInt(20)) * (random.nextInt(2) == 0 ? -1 : 1));
+    public boolean place(WorldGenLevel world, ChunkGenerator generator, Random random, BlockPos pos, NoneFeatureConfiguration config) {
+        BlockPos endPos = pos.offset((40 + random.nextInt(20)) * (random.nextInt(2) == 0 ? -1 : 1), 0, (40 + random.nextInt(20)) * (random.nextInt(2) == 0 ? -1 : 1));
 
-        if (!world.isAirBlock(pos) || world.getBlockState(pos.down()) != IEBlocks.GLOWDUST_SAND.get().getDefaultState() || world.getBlockState(endPos.down()) == Blocks.LAVA.getDefaultState()) {
+        if (!world.isEmptyBlock(pos) || world.getBlockState(pos.below()) != IEBlocks.GLOWDUST_SAND.get().defaultBlockState() || world.getBlockState(endPos.below()) == Blocks.LAVA.defaultBlockState()) {
             return false;
         } else {
             List<BlockPos> centerLine = ShapeUtil.generateLine(pos, endPos);
@@ -42,8 +42,8 @@ public class GlowstoneRavineFeature extends Feature<NoFeatureConfig> {
             for (int i = 1; i <= segments; i++) {
                 BlockPos segment = centerLine.get(((centerLine.size() / 3) * i) - 1);
 
-                sidePoints.add(segment.add(1 + random.nextInt(2), 0, 1 + random.nextInt(2)));
-                sidePoints.add(segment.add((1 + random.nextInt(2)) * -1, 0, (1 + random.nextInt(2)) * -1));
+                sidePoints.add(segment.offset(1 + random.nextInt(2), 0, 1 + random.nextInt(2)));
+                sidePoints.add(segment.offset((1 + random.nextInt(2)) * -1, 0, (1 + random.nextInt(2)) * -1));
             }
 
             Set<BlockPos> points = new HashSet<>();
@@ -72,7 +72,7 @@ public class GlowstoneRavineFeature extends Feature<NoFeatureConfig> {
             // Replace blocks with air
             for (BlockPos point : points) {
                 for (int y = 0; y < 10; y++) {
-                    world.setBlockState(point.down(y), Blocks.AIR.getDefaultState(), 2);
+                    world.setBlock(point.below(y), Blocks.AIR.defaultBlockState(), 2);
                 }
             }
 

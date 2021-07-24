@@ -3,64 +3,64 @@ package com.nekomaster1000.infernalexp.client.entity.model;
 // Paste this class into your mod and generate all required imports
 
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import com.nekomaster1000.infernalexp.entities.ShroomloinEntity;
 
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 
 public class ShroomloinModel<T extends ShroomloinEntity> extends EntityModel<T> {
-	private final ModelRenderer all;
-	private final ModelRenderer body;
-	private final ModelRenderer hat;
-	private final ModelRenderer rightleg;
-	private final ModelRenderer leftleg;
+	private final ModelPart all;
+	private final ModelPart body;
+	private final ModelPart hat;
+	private final ModelPart rightleg;
+	private final ModelPart leftleg;
 
 	public ShroomloinModel() {
-		textureWidth = 64;
-		textureHeight = 64;
+		texWidth = 64;
+		texHeight = 64;
 
-		textureWidth = 64;
-		textureHeight = 64;
+		texWidth = 64;
+		texHeight = 64;
 
-		all = new ModelRenderer(this);
-		all.setRotationPoint(0.0F, 24.0F, 0.0F);
+		all = new ModelPart(this);
+		all.setPos(0.0F, 24.0F, 0.0F);
 
 
-		body = new ModelRenderer(this);
-		body.setRotationPoint(0.0F, -4.0F, 0.0F);
+		body = new ModelPart(this);
+		body.setPos(0.0F, -4.0F, 0.0F);
 		all.addChild(body);
-		body.setTextureOffset(1, 23).addBox(-5.0F, -6.0F, -5.0F, 10.0F, 6.0F, 9.0F, 0.0F, false);
+		body.texOffs(1, 23).addBox(-5.0F, -6.0F, -5.0F, 10.0F, 6.0F, 9.0F, 0.0F, false);
 
-		hat = new ModelRenderer(this);
-		hat.setRotationPoint(0.0F, -4.0F, -0.5F);
+		hat = new ModelPart(this);
+		hat.setPos(0.0F, -4.0F, -0.5F);
 		body.addChild(hat);
-		hat.setTextureOffset(0, 0).addBox(-8.0F, -6.0F, -8.0F, 16.0F, 6.0F, 16.0F, 0.0F, false);
+		hat.texOffs(0, 0).addBox(-8.0F, -6.0F, -8.0F, 16.0F, 6.0F, 16.0F, 0.0F, false);
 
-		rightleg = new ModelRenderer(this);
-		rightleg.setRotationPoint(-2.5F, -4.0F, -0.5F);
+		rightleg = new ModelPart(this);
+		rightleg.setPos(-2.5F, -4.0F, -0.5F);
 		all.addChild(rightleg);
-		rightleg.setTextureOffset(0, 8).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, true);
+		rightleg.texOffs(0, 8).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, true);
 
-		leftleg = new ModelRenderer(this);
-		leftleg.setRotationPoint(2.5F, -4.0F, -0.5F);
+		leftleg = new ModelPart(this);
+		leftleg.setPos(2.5F, -4.0F, -0.5F);
 		all.addChild(leftleg);
-		leftleg.setTextureOffset(0, 0).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, false);
+		leftleg.texOffs(0, 0).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, false);
 	}
 
 	@Override
-	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.leftleg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-		this.rightleg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-		this.hat.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.5F * limbSwingAmount;
-		this.body.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.25F * limbSwingAmount;
+	public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.leftleg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+		this.rightleg.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+		this.hat.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.5F * limbSwingAmount;
+		this.body.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.25F * limbSwingAmount;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
 		all.render(matrixStack, buffer, packedLight, packedOverlay);
 		/*
 		body.render(matrixStack, buffer, packedLight, packedOverlay);
@@ -70,9 +70,9 @@ public class ShroomloinModel<T extends ShroomloinEntity> extends EntityModel<T> 
 		*/
 	}
 
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-		modelRenderer.rotateAngleX = x;
-		modelRenderer.rotateAngleY = y;
-		modelRenderer.rotateAngleZ = z;
+	public void setRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
+		modelRenderer.xRot = x;
+		modelRenderer.yRot = y;
+		modelRenderer.zRot = z;
 	}
 }

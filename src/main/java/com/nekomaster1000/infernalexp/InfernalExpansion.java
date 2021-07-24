@@ -31,20 +31,20 @@ import com.nekomaster1000.infernalexp.util.CompatibilityQuark;
 import com.nekomaster1000.infernalexp.util.ModSpawnEggItem;
 import com.nekomaster1000.infernalexp.world.dimension.ModNetherBiomeProvider;
 import com.nekomaster1000.infernalexp.world.gen.ModEntityPlacement;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.carver.WorldCarver;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.core.BlockSource;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -148,60 +148,60 @@ public class InfernalExpansion {
 
         //Register Brewing Recipes for Potions
         BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-            PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), Potions.AWKWARD),
+            PotionUtils.setPotion(Items.POTION.getDefaultInstance(), Potions.AWKWARD),
             IEItems.MOTH_DUST.get().getDefaultInstance(),
-            PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get())));
+            PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get())));
         BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-                PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
+                PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
                 Items.GUNPOWDER.getDefaultInstance(),
-                PotionUtils.addPotionToItemStack(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.LUMINOUS.get())));
+                PotionUtils.setPotion(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.LUMINOUS.get())));
         BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-                PotionUtils.addPotionToItemStack(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
+                PotionUtils.setPotion(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
                 Items.DRAGON_BREATH.getDefaultInstance(),
-                PotionUtils.addPotionToItemStack(Items.LINGERING_POTION.getDefaultInstance(), IEPotions.LUMINOUS.get())));
+                PotionUtils.setPotion(Items.LINGERING_POTION.getDefaultInstance(), IEPotions.LUMINOUS.get())));
         BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-                PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
+                PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
                 Items.REDSTONE.getDefaultInstance(),
-                PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.LONG_LUMINOUS.get())));
+                PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.LONG_LUMINOUS.get())));
         BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-                PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
+                PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.LUMINOUS.get()),
                 Items.GLOWSTONE_DUST.getDefaultInstance(),
-                PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.STRONG_LUMINOUS.get())));
+                PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.STRONG_LUMINOUS.get())));
 
 		BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), Potions.AWKWARD),
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), Potions.AWKWARD),
 			IEItems.ASCUS_BOMB.get().getDefaultInstance(),
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get())));
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get())));
 		BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
 			Items.GUNPOWDER.getDefaultInstance(),
-			PotionUtils.addPotionToItemStack(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.INFECTION.get())));
+			PotionUtils.setPotion(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.INFECTION.get())));
 		BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-			PotionUtils.addPotionToItemStack(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
+			PotionUtils.setPotion(Items.SPLASH_POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
 			Items.DRAGON_BREATH.getDefaultInstance(),
-			PotionUtils.addPotionToItemStack(Items.LINGERING_POTION.getDefaultInstance(), IEPotions.INFECTION.get())));
+			PotionUtils.setPotion(Items.LINGERING_POTION.getDefaultInstance(), IEPotions.INFECTION.get())));
 		BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
 			Items.REDSTONE.getDefaultInstance(),
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.LONG_INFECTION.get())));
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.LONG_INFECTION.get())));
 		BrewingRecipeRegistry.addRecipe(new IEBrewingRecipe(
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.INFECTION.get()),
 			Items.GLOWSTONE_DUST.getDefaultInstance(),
-			PotionUtils.addPotionToItemStack(Items.POTION.getDefaultInstance(), IEPotions.STRONG_INFECTION.get())));
+			PotionUtils.setPotion(Items.POTION.getDefaultInstance(), IEPotions.STRONG_INFECTION.get())));
 
 		//Custom Dispenser Behavior
-        DispenserBlock.registerDispenseBehavior(Items.GLOWSTONE_DUST, new DefaultDispenseItemBehavior() {
+        DispenserBlock.registerBehavior(Items.GLOWSTONE_DUST, new DefaultDispenseItemBehavior() {
             @Override
-            protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-                World world = source.getWorld();
-                BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+            protected ItemStack execute(BlockSource source, ItemStack stack) {
+                Level world = source.getLevel();
+                BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
                 ItemStack itemstack = stack.split(1);
                 if (world.getBlockState(blockpos).getBlock() == IEBlocks.DIMSTONE.get()) {
-                    world.setBlockState(blockpos, Blocks.GLOWSTONE.getDefaultState());
+                    world.setBlockAndUpdate(blockpos, Blocks.GLOWSTONE.defaultBlockState());
                 } else if (world.getBlockState(blockpos).getBlock() == IEBlocks.DULLSTONE.get()) {
-                    world.setBlockState(blockpos, IEBlocks.DIMSTONE.get().getDefaultState());
+                    world.setBlockAndUpdate(blockpos, IEBlocks.DIMSTONE.get().defaultBlockState());
                 } else {
-                    doDispense(world, itemstack, 6, source.getBlockState().get(DispenserBlock.FACING), DispenserBlock.getDispensePosition(source));
+                    spawnItem(world, itemstack, 6, source.getBlockState().getValue(DispenserBlock.FACING), DispenserBlock.getDispensePosition(source));
                 }
 
                 return stack;
@@ -218,13 +218,13 @@ public class InfernalExpansion {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
-        IECommands.registerCommands(event.getServer().getCommandManager().getDispatcher());
+        IECommands.registerCommands(event.getServer().getCommands().getDispatcher());
     }
 
-    public static final ItemGroup TAB = new ItemGroup("InfernalTab") {
+    public static final CreativeModeTab TAB = new CreativeModeTab("InfernalTab") {
 
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(IEItems.TAB_ITEM.get());
         }
 

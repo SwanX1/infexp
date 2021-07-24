@@ -5,11 +5,11 @@ import com.nekomaster1000.infernalexp.init.IEEffects;
 import com.nekomaster1000.infernalexp.init.IEParticleTypes;
 import com.nekomaster1000.infernalexp.init.IEPotions;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.Potion;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,11 +20,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Set;
 
-@Mixin(ArrowEntity.class)
+@Mixin(Arrow.class)
 public abstract class MixinArrowEntity {
 	@Final
 	@Shadow
-	private Set<EffectInstance> customPotionEffects;
+	private Set<MobEffectInstance> customPotionEffects;
 
 	@Shadow
 	protected abstract void refreshColor();
@@ -43,11 +43,11 @@ public abstract class MixinArrowEntity {
 	}
 
 	@Inject(at = @At("RETURN"), method = "addEffect")
-	private void addEffectInfernalExpansion(EffectInstance effect, CallbackInfo ci) {
-		for (EffectInstance effectInstance : this.customPotionEffects) {
-			if (effectInstance.getPotion() == IEEffects.INFECTION.get()) {
+	private void addEffectInfernalExpansion(MobEffectInstance effect, CallbackInfo ci) {
+		for (MobEffectInstance effectInstance : this.customPotionEffects) {
+			if (effectInstance.getEffect() == IEEffects.INFECTION.get()) {
 				((AbstractArrowEntityAccess) this).setInfection(true);
-			} else if (effectInstance.getPotion() == IEEffects.LUMINOUS.get()) {
+			} else if (effectInstance.getEffect() == IEEffects.LUMINOUS.get()) {
 				((AbstractArrowEntityAccess) this).setLuminous(true);
 			}
 		}
@@ -58,16 +58,16 @@ public abstract class MixinArrowEntity {
 	private void spawnCustomParticlesInfernalExpansion(int particleCount, CallbackInfo ci) {
 		if (((AbstractArrowEntityAccess) this).getLuminous()) {
 			for(int j = 0; j < particleCount; ++j) {
-				((ArrowEntity) (Object) this).world.addParticle(IEParticleTypes.GLOWSTONE_SPARKLE.get(),
-					((ArrowEntity) (Object) this).getPosXRandom(0.5D), ((ArrowEntity) (Object) this).getPosYRandom(),
-					((ArrowEntity) (Object) this).getPosZRandom(0.5D), 0.0D, 0.0D, 0.0D);
+				((Arrow) (Object) this).level.addParticle(IEParticleTypes.GLOWSTONE_SPARKLE.get(),
+					((Arrow) (Object) this).getRandomX(0.5D), ((Arrow) (Object) this).getRandomY(),
+					((Arrow) (Object) this).getRandomZ(0.5D), 0.0D, 0.0D, 0.0D);
 			}
 		}
 		if (((AbstractArrowEntityAccess) this).getInfection()) {
 			for(int j = 0; j < particleCount; ++j) {
-				((ArrowEntity) (Object) this).world.addParticle(IEParticleTypes.INFECTION.get(),
-					((ArrowEntity) (Object) this).getPosXRandom(0.5D), ((ArrowEntity) (Object) this).getPosYRandom(),
-					((ArrowEntity) (Object) this).getPosZRandom(0.5D), 0.0D, 0.0D, 0.0D);
+				((Arrow) (Object) this).level.addParticle(IEParticleTypes.INFECTION.get(),
+					((Arrow) (Object) this).getRandomX(0.5D), ((Arrow) (Object) this).getRandomY(),
+					((Arrow) (Object) this).getRandomZ(0.5D), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
@@ -75,7 +75,7 @@ public abstract class MixinArrowEntity {
 	@Inject(at = @At("RETURN"), method = "arrowHit")
     private void onArrowHitInfernalExpansion(LivingEntity living, CallbackInfo ci) {
 	    if (((AbstractArrowEntityAccess) this).getLuminous()) {
-	        living.addPotionEffect(new EffectInstance(IEEffects.LUMINOUS.get(), 3600));
+	        living.addEffect(new MobEffectInstance(IEEffects.LUMINOUS.get(), 3600));
         }
     }
 }

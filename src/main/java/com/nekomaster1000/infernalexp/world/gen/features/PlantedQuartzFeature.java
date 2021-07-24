@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec;
 import com.nekomaster1000.infernalexp.blocks.PlantedQuartzBlock;
 import com.nekomaster1000.infernalexp.init.IEBlocks;
 import com.nekomaster1000.infernalexp.world.gen.features.config.PlantedQuartzFeatureConfig;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.properties.AttachFace;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +24,21 @@ public class PlantedQuartzFeature extends Feature<PlantedQuartzFeatureConfig> {
     }
 
     @Override
-    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random random, BlockPos pos, PlantedQuartzFeatureConfig config) {
+    public boolean place(WorldGenLevel worldIn, ChunkGenerator generator, Random random, BlockPos pos, PlantedQuartzFeatureConfig config) {
         int i = 0;
         int amount = 15;
 
         // Attempt to place quartz 256 times
         for (int j = 0; j < 256; j++) {
             // Randomize the location of the next quartz to be placed
-            BlockPos blockpos = pos.add(random.nextInt(10) - random.nextInt(20), random.nextInt(4) - random.nextInt(8), random.nextInt(10) - random.nextInt(20));
+            BlockPos blockpos = pos.offset(random.nextInt(10) - random.nextInt(20), random.nextInt(4) - random.nextInt(8), random.nextInt(10) - random.nextInt(20));
             List<BlockState> allowedBlockstates = new ArrayList<BlockState>(6);
 
             BlockState iterState;
-            iterState = IEBlocks.PLANTED_QUARTZ.get().getDefaultState().with(PlantedQuartzBlock.FACE, AttachFace.FLOOR);
-            if (iterState.isValidPosition(worldIn, blockpos)) allowedBlockstates.add(iterState);
-            iterState = IEBlocks.PLANTED_QUARTZ.get().getDefaultState().with(PlantedQuartzBlock.FACE, AttachFace.CEILING);
-            if (iterState.isValidPosition(worldIn, blockpos)) allowedBlockstates.add(iterState);
+            iterState = IEBlocks.PLANTED_QUARTZ.get().defaultBlockState().setValue(PlantedQuartzBlock.FACE, AttachFace.FLOOR);
+            if (iterState.canSurvive(worldIn, blockpos)) allowedBlockstates.add(iterState);
+            iterState = IEBlocks.PLANTED_QUARTZ.get().defaultBlockState().setValue(PlantedQuartzBlock.FACE, AttachFace.CEILING);
+            if (iterState.canSurvive(worldIn, blockpos)) allowedBlockstates.add(iterState);
             for (int k = 0; k < 4; k++) {
                 Direction iterDirection;
                 if (i == 0) {
@@ -50,19 +50,19 @@ public class PlantedQuartzFeature extends Feature<PlantedQuartzFeatureConfig> {
                 } else {
                     iterDirection = Direction.WEST;
                 }
-                iterState = IEBlocks.PLANTED_QUARTZ.get().getDefaultState().with(PlantedQuartzBlock.FACE, AttachFace.CEILING).with(PlantedQuartzBlock.HORIZONTAL_FACING, iterDirection);
-                if (iterState.isValidPosition(worldIn, blockpos)) allowedBlockstates.add(iterState);
+                iterState = IEBlocks.PLANTED_QUARTZ.get().defaultBlockState().setValue(PlantedQuartzBlock.FACE, AttachFace.CEILING).setValue(PlantedQuartzBlock.FACING, iterDirection);
+                if (iterState.canSurvive(worldIn, blockpos)) allowedBlockstates.add(iterState);
             }
             if (allowedBlockstates.size() < 1) {
                 continue;
             }
             BlockState state = allowedBlockstates.get(random.nextInt(allowedBlockstates.size()));
             // If it's a valid location, attempt a generation
-            if (worldIn.isAirBlock(blockpos) && state.isValidPosition(worldIn, blockpos)) {
+            if (worldIn.isEmptyBlock(blockpos) && state.canSurvive(worldIn, blockpos)) {
                 // If there is quartz nearby or the chance to generate passes, generate it
                 float chance = random.nextFloat();
                 if (findOre(worldIn, blockpos) || chance > config.chanceToFail) {
-                    worldIn.setBlockState(blockpos, state, 2);
+                    worldIn.setBlock(blockpos, state, 2);
                     i++;
                 }
             }
@@ -76,7 +76,7 @@ public class PlantedQuartzFeature extends Feature<PlantedQuartzFeatureConfig> {
         return false;
     }
 
-    public boolean findOre(ISeedReader world, BlockPos pos) {
+    public boolean findOre(WorldGenLevel world, BlockPos pos) {
         final int radius = 3;
         for (int x = pos.getX() - radius; x < pos.getX() + radius; x++) {
             for (int y = pos.getY() - radius; y < pos.getY() + radius; y++) {

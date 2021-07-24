@@ -2,15 +2,15 @@ package com.nekomaster1000.infernalexp.tileentities;
 
 import com.nekomaster1000.infernalexp.init.IETileEntityTypes;
 
-import net.minecraft.tileentity.CampfireTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.CampfireBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class GlowCampfireTileEntity extends CampfireTileEntity {
+public class GlowCampfireTileEntity extends CampfireBlockEntity {
     public GlowCampfireTileEntity() {
         super();
     }
     
-    public TileEntityType<?> getType() {
+    public BlockEntityType<?> getType() {
         return IETileEntityTypes.GLOW_CAMPFIRE.get();
     }
 }

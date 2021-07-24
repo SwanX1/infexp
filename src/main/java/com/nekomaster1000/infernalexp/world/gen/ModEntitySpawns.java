@@ -12,7 +12,7 @@ import com.nekomaster1000.infernalexp.entities.VolineEntity;
 import com.nekomaster1000.infernalexp.entities.WarpbeetleEntity;
 import com.nekomaster1000.infernalexp.init.IEEntityTypes;
 
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,16 +25,16 @@ public class ModEntitySpawns {
 
     @SubscribeEvent
     public static void spawnEntities(FMLLoadCompleteEvent event) {
-        GlobalEntityTypeAttributes.put(IEEntityTypes.VOLINE.get(), VolineEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.SHROOMLOIN.get(), ShroomloinEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.WARPBEETLE.get(), WarpbeetleEntity.setCustomAttributes().create());
+        DefaultAttributes.put(IEEntityTypes.VOLINE.get(), VolineEntity.setCustomAttributes().build());
+        DefaultAttributes.put(IEEntityTypes.SHROOMLOIN.get(), ShroomloinEntity.setCustomAttributes().build());
+        DefaultAttributes.put(IEEntityTypes.WARPBEETLE.get(), WarpbeetleEntity.setCustomAttributes().build());
         //GlobalEntityTypeAttributes.put(IEEntityTypes.CEROBEETLE.get(), CerobeetleEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.EMBODY.get(), EmbodyEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.BASALT_GIANT.get(), BasaltGiantEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.BLACKSTONE_DWARF.get(), BlackstoneDwarfEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.GLOWSQUITO.get(), GlowsquitoEntity.setCustomAttributes().create());
+        DefaultAttributes.put(IEEntityTypes.EMBODY.get(), EmbodyEntity.setCustomAttributes().build());
+        DefaultAttributes.put(IEEntityTypes.BASALT_GIANT.get(), BasaltGiantEntity.setCustomAttributes().build());
+        DefaultAttributes.put(IEEntityTypes.BLACKSTONE_DWARF.get(), BlackstoneDwarfEntity.setCustomAttributes().build());
+        DefaultAttributes.put(IEEntityTypes.GLOWSQUITO.get(), GlowsquitoEntity.setCustomAttributes().build());
         //GlobalEntityTypeAttributes.put(IEEntityTypes.PYRNO.get(), PyrnoEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.BLINDSIGHT.get(), BlindsightEntity.setCustomAttributes().create());
-        GlobalEntityTypeAttributes.put(IEEntityTypes.GLOWSILK_MOTH.get(), GlowsilkMothEntity.setCustomAttributes().create());
+        DefaultAttributes.put(IEEntityTypes.BLINDSIGHT.get(), BlindsightEntity.setCustomAttributes().build());
+        DefaultAttributes.put(IEEntityTypes.GLOWSILK_MOTH.get(), GlowsilkMothEntity.setCustomAttributes().build());
         }
     }

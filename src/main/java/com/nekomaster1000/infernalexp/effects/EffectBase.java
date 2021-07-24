@@ -1,11 +1,11 @@
 package com.nekomaster1000.infernalexp.effects;
 
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 
-public class EffectBase extends Effect {
+public class EffectBase extends MobEffect {
 
-    public EffectBase(EffectType typeIn, int liquidColorIn) {
+    public EffectBase(MobEffectCategory typeIn, int liquidColorIn) {
         super(typeIn, liquidColorIn);
     }
 

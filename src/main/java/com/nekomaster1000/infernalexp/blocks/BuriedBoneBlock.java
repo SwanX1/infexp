@@ -2,43 +2,46 @@ package com.nekomaster1000.infernalexp.blocks;
 
 import com.nekomaster1000.infernalexp.init.IEBlocks;
 import com.nekomaster1000.infernalexp.init.IETags;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.AttachFace;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.CheckForNull;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class BuriedBoneBlock extends HorizontalBushBlock {
-    protected static final VoxelShape FLOOR_SHAPE = Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
-    protected static final VoxelShape CEILING_SHAPE = Block.makeCuboidShape(5.0D, 6.0D, 5.0D, 11.0D, 16.0D, 11.0D);
+    protected static final VoxelShape FLOOR_SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
+    protected static final VoxelShape CEILING_SHAPE = Block.box(5.0D, 6.0D, 5.0D, 11.0D, 16.0D, 11.0D);
 
     public BuriedBoneBlock(Properties properties) {
         super(properties);
-        this.setDefaultState(this.getDefaultState().with(FACE, AttachFace.FLOOR));
+        this.registerDefaultState(this.defaultBlockState().setValue(FACE, AttachFace.FLOOR));
     }
 
     @CheckForNull
-    public BlockState getPlaceableState(World world, BlockPos pos, Direction placeSide) {
+    public BlockState getPlaceableState(Level world, BlockPos pos, Direction placeSide) {
         if (world.getBlockState(pos).getMaterial().isReplaceable() && world.getBlockState(pos).getBlock() != IEBlocks.BURIED_BONE.get()) {
             if (placeSide.getAxis() != Axis.Y) {
                 placeSide = Direction.UP;
             }
             Direction attachdirection;
-            if (this.isValidGround(world.getBlockState(pos.offset(placeSide.getOpposite())), world, pos)) {
+            if (this.isValidGround(world.getBlockState(pos.relative(placeSide.getOpposite())), world, pos)) {
                 attachdirection = placeSide.getOpposite();
-            } else if (this.isValidGround(world.getBlockState(pos.offset(placeSide)), world, pos)) {
+            } else if (this.isValidGround(world.getBlockState(pos.relative(placeSide)), world, pos)) {
                 attachdirection = placeSide;
             } else {
                 return null;
@@ -49,36 +52,36 @@ public class BuriedBoneBlock extends HorizontalBushBlock {
             } else {
                 attachface = AttachFace.FLOOR;
             }
-            return this.getDefaultState().with(FACE, attachface);
+            return this.defaultBlockState().setValue(FACE, attachface);
         }
         return null;
     }
     
     @Override
-    protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return state.getBlock().isIn(IETags.Blocks.BURIED_BONE_BASE_BLOCKS);
+    protected boolean isValidGround(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        return state.getBlock().is(IETags.Blocks.BURIED_BONE_BASE_BLOCKS);
     }
 
-    public boolean canAttach(IWorldReader reader, BlockPos pos, Direction direction) {
-        BlockPos blockpos = pos.offset(direction);
+    public boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
+        BlockPos blockpos = pos.relative(direction);
         return isValidGround(reader.getBlockState(blockpos), reader, blockpos);
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        return !state.get(FACE).equals(AttachFace.WALL) && canAttach(worldIn, pos, getFacing(state).getOpposite());
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
+        return !state.getValue(FACE).equals(AttachFace.WALL) && canAttach(worldIn, pos, getConnectedDirection(state).getOpposite());
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Vector3d vector3d = state.getOffset(worldIn, pos);
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        Vec3 vector3d = state.getOffset(worldIn, pos);
 
-        switch(state.get(FACE)){
+        switch(state.getValue(FACE)){
             case FLOOR:
-                return FLOOR_SHAPE.withOffset(vector3d.x, vector3d.y, vector3d.z);
+                return FLOOR_SHAPE.move(vector3d.x, vector3d.y, vector3d.z);
             case CEILING:
             default:
-                return CEILING_SHAPE.withOffset(vector3d.x, vector3d.y, vector3d.z);
+                return CEILING_SHAPE.move(vector3d.x, vector3d.y, vector3d.z);
         }
     }
 
@@ -88,8 +91,8 @@ public class BuriedBoneBlock extends HorizontalBushBlock {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builderIn) {
-        builderIn.add(HORIZONTAL_FACING, FACE);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builderIn) {
+        builderIn.add(FACING, FACE);
     }
 
     @Override

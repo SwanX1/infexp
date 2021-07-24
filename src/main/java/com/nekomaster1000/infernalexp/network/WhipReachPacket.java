@@ -1,13 +1,13 @@
 package com.nekomaster1000.infernalexp.network;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -26,33 +26,33 @@ public class WhipReachPacket {
 		this.targetEntityID = target;
 	}
 
-	public static void encode(WhipReachPacket message, PacketBuffer buffer) {
-		buffer.writeUniqueId(message.playerUUID);
+	public static void encode(WhipReachPacket message, FriendlyByteBuf buffer) {
+		buffer.writeUUID(message.playerUUID);
 		buffer.writeVarInt(message.targetEntityID);
 	}
 
-	public static WhipReachPacket decode(PacketBuffer buffer) {
-		return new WhipReachPacket(buffer.readUniqueId(), buffer.readVarInt());
+	public static WhipReachPacket decode(FriendlyByteBuf buffer) {
+		return new WhipReachPacket(buffer.readUUID(), buffer.readVarInt());
 	}
 
 	public static void handle(WhipReachPacket message, Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
-			PlayerEntity playerEntity = context.get().getSender();
-            playerEntity.getEntityWorld().playSound(playerEntity, playerEntity.getPosX(), playerEntity.getPosY(), playerEntity.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
+			Player playerEntity = context.get().getSender();
+            playerEntity.getCommandSenderWorld().playSound(playerEntity, playerEntity.getX(), playerEntity.getY(), playerEntity.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 
             if (playerEntity != null && playerEntity.getServer() != null) {
-				ServerPlayerEntity player = playerEntity.getServer().getPlayerList().getPlayerByUUID(message.playerUUID);
-				Entity target = playerEntity.getEntityWorld().getEntityByID(message.targetEntityID);
+				ServerPlayer player = playerEntity.getServer().getPlayerList().getPlayer(message.playerUUID);
+				Entity target = playerEntity.getCommandSenderWorld().getEntity(message.targetEntityID);
 
                 double reach = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue() + 1.0D;
 
 				if (player != null && target != null) {
-					if (player.getDistanceSq(target) < (reach * reach) * player.getCooledAttackStrength(0.0F)) {
-						player.attackTargetEntityWithCurrentItem(target);
-						player.getEntityWorld().playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
+					if (player.distanceToSqr(target) < (reach * reach) * player.getAttackStrengthScale(0.0F)) {
+						player.attack(target);
+						player.getCommandSenderWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F));
 
 						// Change the first float value to change the amount of knockback on hit
-						((LivingEntity) target).applyKnockback(1.0F, MathHelper.sin(player.rotationYaw * ((float) Math.PI / 180F)), -MathHelper.cos(player.rotationYaw * ((float) Math.PI / 180F)));
+						((LivingEntity) target).knockback(1.0F, Mth.sin(player.yRot * ((float) Math.PI / 180F)), -Mth.cos(player.yRot * ((float) Math.PI / 180F)));
 					}
 				}
 			}

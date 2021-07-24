@@ -10,8 +10,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.nekomaster1000.infernalexp.access.FireTypeAccess;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+
+import com.nekomaster1000.infernalexp.access.FireTypeAccess.KnownFireTypes;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity implements FireTypeAccess {
@@ -20,12 +22,12 @@ public abstract class MixinEntity implements FireTypeAccess {
 	private KnownFireTypes fireType = KnownFireTypes.FIRE;
 
 	@Inject(method = "writeWithoutTypeId", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/CompoundNBT;putShort(Ljava/lang/String;S)V", ordinal = 0, shift = Shift.AFTER))
-	private void IE_writeCustomFires(CompoundNBT tag, CallbackInfoReturnable<CompoundNBT> ci) {
+	private void IE_writeCustomFires(CompoundTag tag, CallbackInfoReturnable<CompoundTag> ci) {
 		tag.putString("fireType", fireType.getName());
 	}
 
 	@Inject(method = "read", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/CompoundNBT;getShort(Ljava/lang/String;)S", ordinal = 0, shift = Shift.AFTER))
-	private void IE_readCustomFires(CompoundNBT tag, CallbackInfo ci) {
+	private void IE_readCustomFires(CompoundTag tag, CallbackInfo ci) {
 		fireType = KnownFireTypes.byName(tag.getString("fireType"));
 	}
 
