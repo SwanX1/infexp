@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConf
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.util.UniformInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.levelgen.feature.configurations.CountConfiguration;
 import net.minecraft.data.worldgen.Features;
 import net.minecraft.world.level.levelgen.feature.HugeFungusConfiguration;
@@ -27,7 +27,9 @@ import net.minecraft.world.level.levelgen.feature.configurations.SpringConfigura
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
-import net.minecraft.world.level.levelgen.placement.DepthAverageConfigation;
+// TODO: fix
+// Swan: I don't know what it's replaced by in 1.17
+// import net.minecraft.world.level.levelgen.placement.DepthAverageConfigation;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 
 public class IEConfiguredFeatures {
@@ -35,6 +37,8 @@ public class IEConfiguredFeatures {
     public static final RuleTest BASALT = new BlockMatchTest(Blocks.BASALT);
     public static final RuleTest SOUL_SOIL = new BlockMatchTest(Blocks.SOUL_SOIL);
 
+    // TODO: fix
+    /*
     public static ConfiguredFeature<?, ?> GLOWDUST_LAYER = registerConfiguredFeature("glowdust_layer", IEFeatures.GLOWDUST_LAYER.configured(FeatureConfiguration.NONE));
     public static ConfiguredFeature<?, ?> GLOWSPIKE = registerConfiguredFeature("glowspike", IEFeatures.GLOWSPIKE.configured(new GlowSpikeFeatureConfig(3, 5, 8, 24, 7, 7, 0.3f, true)).decorated(Features.Decorators.HEIGHTMAP_DOUBLE_SQUARE.count(30)));
     public static ConfiguredFeature<?, ?> GLOWSPIKELARGE = registerConfiguredFeature("glowspikelarge", IEFeatures.GLOWSPIKE.configured(new GlowSpikeFeatureConfig(4, 7, 12, 98, 12, 12, 0.2f, false)).decorated(Features.Decorators.HEIGHTMAP_DOUBLE_SQUARE.count(30)));
@@ -59,7 +63,7 @@ public class IEConfiguredFeatures {
     public static ConfiguredFeature<?, ?> PATCH_BURIED_BONE = registerConfiguredFeature("patch_buried_bone", Feature.RANDOM_PATCH.configured((new RandomPatchConfiguration.GrassConfigurationBuilder(new SimpleStateProvider(IEBlocks.BURIED_BONE.get().defaultBlockState()), new SimpleBlockPlacer())).tries(128).whitelist(ImmutableSet.of(Blocks.SOUL_SOIL.getBlock())).noProjection().build()).range(128).count(8).chance(3));
     public static ConfiguredFeature<?, ?> ORE_SOUL_STONE = registerConfiguredFeature("ore_soul_stone", Feature.ORE.configured(new OreConfiguration(SOUL_SOIL, IEBlocks.SOUL_STONE.get().defaultBlockState(), 40)).decorated(Features.Decorators.RANGE_10_20_ROOFED).squared().count(45));
     public static ConfiguredFeature<?, ?> PATCH_PLANTED_QUARTZ = registerConfiguredFeature("planted_quartz_patch", IEFeatures.PATCH_PLANTED_QUARTZ.configured(new PlantedQuartzFeatureConfig(0.95F)).decorated(Features.Decorators.HEIGHTMAP_DOUBLE_SQUARE.count(10)));
-
+    */
     //public static final ConfiguredFeature<?, ?> PATCH_CRIMSON_ROOTS = register("patch_crimson_roots", Feature.RANDOM_PATCH.withConfiguration((new BlockClusterFeatureConfig.Builder(new SimpleBlockStateProvider(Features.States.CRIMSON_ROOTS), new SimpleBlockPlacer())).tries(64).preventProjection().build()).range(128));
 
 

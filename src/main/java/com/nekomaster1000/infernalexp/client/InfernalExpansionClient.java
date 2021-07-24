@@ -10,8 +10,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fmlclient.ConfigGuiHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,25 +22,25 @@ import java.io.InputStream;
 public class InfernalExpansionClient {
     public static void init() {
         // Register GUI Factories
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ConfigScreen());
+        ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory((mc, screen) -> new ConfigScreen()));
 
         MinecraftForge.EVENT_BUS.addListener((LivingUpdateEvent event) -> DynamicLightingHandler.tick(event.getEntityLiving()));
 
-        ItemProperties.register(IEItems.GLOWSILK_BOW.get(), new ResourceLocation("pull"), (itemStack, clientWorld, livingEntity) -> {
+        ItemProperties.register(IEItems.GLOWSILK_BOW.get(), new ResourceLocation(InfernalExpansion.MOD_ID, "pull"), (itemStack, clientWorld, livingEntity, i) -> {
           if (livingEntity == null) {
               return 0.0F;
           } else {
               return livingEntity.getUseItem() != itemStack ? 0.0F : (float) (itemStack.getUseDuration() - livingEntity.getUseItemRemainingTicks()) / 20.0F;
         }});
         
-        ItemProperties.register(IEItems.GLOWSILK_BOW.get(), new ResourceLocation("pulling"), (itemStack, clientWorld, livingEntity) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1.0F : 0.0F);
+        ItemProperties.register(IEItems.GLOWSILK_BOW.get(), new ResourceLocation(InfernalExpansion.MOD_ID, "pulling"), (itemStack, clientWorld, livingEntity, i) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1.0F : 0.0F);
 
-        ItemProperties.register(IEItems.BLINDSIGHT_TONGUE_WHIP.get(), new ResourceLocation("attack_frame"), (itemStack, clientWorld, livingEntity) ->
+        ItemProperties.register(IEItems.BLINDSIGHT_TONGUE_WHIP.get(), new ResourceLocation(InfernalExpansion.MOD_ID, "attack_frame"), (itemStack, clientWorld, livingEntity, i) ->
             livingEntity == null || (livingEntity.getMainHandItem() != itemStack && livingEntity.getOffhandItem() != itemStack) ?
                 0 : (int) (((WhipItem) itemStack.getItem()).getTicksSinceAttack(itemStack) / 6.0F)
         );
 
-        ItemProperties.register(IEItems.BLINDSIGHT_TONGUE_WHIP.get(), new ResourceLocation("attacking"), (itemStack, clientWorld, livingEntity) -> livingEntity != null && (((WhipItem) itemStack.getItem()).getAttacking(itemStack) || ((WhipItem) itemStack.getItem()).getCharging(itemStack)) && (livingEntity.getMainHandItem() == itemStack || livingEntity.getOffhandItem() == itemStack) ? 1.0F : 0.0F);
+        ItemProperties.register(IEItems.BLINDSIGHT_TONGUE_WHIP.get(), new ResourceLocation(InfernalExpansion.MOD_ID, "attacking"), (itemStack, clientWorld, livingEntity, i) -> livingEntity != null && (((WhipItem) itemStack.getItem()).getAttacking(itemStack) || ((WhipItem) itemStack.getItem()).getCharging(itemStack)) && (livingEntity.getMainHandItem() == itemStack || livingEntity.getOffhandItem() == itemStack) ? 1.0F : 0.0F);
 
         InfernalExpansionClient.loadInfernalResources();
     }

@@ -18,8 +18,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.CheckForNull;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class PlantedQuartzBlock extends HorizontalBushBlock {
     protected static final VoxelShape FLOOR_SHAPE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D);
     protected static final VoxelShape CEILING_SHAPE = Block.box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
@@ -35,7 +33,11 @@ public class PlantedQuartzBlock extends HorizontalBushBlock {
 
     @Override
     protected boolean isValidGround(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return state.getBlock().is(IETags.Blocks.PLANTED_QUARTZ_BASE_BLOCKS);
+        return isValidGroundStatic(state, worldIn, pos);
+    }
+
+    protected static boolean isValidGroundStatic(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        return IETags.Blocks.PLANTED_QUARTZ_BASE_BLOCKS.contains(state.getBlock());
     }
 
     @CheckForNull
@@ -71,9 +73,9 @@ public class PlantedQuartzBlock extends HorizontalBushBlock {
         return canAttach(worldIn, pos, getConnectedDirection(state).getOpposite());
     }
 
-    public boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
+    public static boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.relative(direction);
-        return isValidGround(reader.getBlockState(blockpos), reader, blockpos);
+        return isValidGroundStatic(reader.getBlockState(blockpos), reader, blockpos);
     }
 
     @Override

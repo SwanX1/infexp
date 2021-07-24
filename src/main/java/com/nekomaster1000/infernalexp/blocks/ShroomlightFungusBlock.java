@@ -15,9 +15,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class ShroomlightFungusBlock extends HorizontalBushBlock {
     protected static final VoxelShape FLOOR_SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
     protected static final VoxelShape CEILING_SHAPE = Block.box(5.0D, 6.0D, 5.0D, 11.0D, 16.0D, 11.0D);
@@ -29,6 +26,10 @@ public class ShroomlightFungusBlock extends HorizontalBushBlock {
 
     @Override
     protected boolean isValidGround(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        return isValidGroundStatic(state, worldIn, pos);
+    }
+
+    protected static boolean isValidGroundStatic(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return
 			state.is(Blocks.GRASS_BLOCK) ||
 				state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT) || state.is(Blocks.FARMLAND) ||
@@ -45,9 +46,9 @@ public class ShroomlightFungusBlock extends HorizontalBushBlock {
 				state.is(Blocks.SHROOMLIGHT);
     }
 
-    public boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
+    public static boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.relative(direction);
-        return isValidGround(reader.getBlockState(blockpos), reader, blockpos);
+        return isValidGroundStatic(reader.getBlockState(blockpos), reader, blockpos);
     }
 
     @Override

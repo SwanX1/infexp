@@ -5,7 +5,7 @@ import com.nekomaster1000.infernalexp.world.biome.netherbiomes.GlowstoneCanyonBi
 import net.minecraft.world.level.biome.Biome;
 
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

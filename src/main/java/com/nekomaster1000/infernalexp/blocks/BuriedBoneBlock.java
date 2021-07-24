@@ -20,9 +20,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.CheckForNull;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class BuriedBoneBlock extends HorizontalBushBlock {
     protected static final VoxelShape FLOOR_SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
     protected static final VoxelShape CEILING_SHAPE = Block.box(5.0D, 6.0D, 5.0D, 11.0D, 16.0D, 11.0D);
@@ -59,12 +56,16 @@ public class BuriedBoneBlock extends HorizontalBushBlock {
     
     @Override
     protected boolean isValidGround(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return state.getBlock().is(IETags.Blocks.BURIED_BONE_BASE_BLOCKS);
+        return isValidGroundStatic(state, worldIn, pos);
     }
 
-    public boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
+    protected static boolean isValidGroundStatic(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        return IETags.Blocks.BURIED_BONE_BASE_BLOCKS.contains(state.getBlock());
+    }
+
+    public static boolean canAttach(LevelReader reader, BlockPos pos, Direction direction) {
         BlockPos blockpos = pos.relative(direction);
-        return isValidGround(reader.getBlockState(blockpos), reader, blockpos);
+        return isValidGroundStatic(reader.getBlockState(blockpos), reader, blockpos);
     }
 
     @Override

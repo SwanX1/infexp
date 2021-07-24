@@ -18,7 +18,7 @@ import net.minecraft.core.Direction;
 
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import net.minecraft.world.item.Item.Properties;

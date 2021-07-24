@@ -11,8 +11,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraftforge.common.IPlantable;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 /**
  * A copy of the BushBlock class provided by MinecraftForge that extends HorizontalFaceBlock in order to allow for
  * bushes that are planted on the sides or bottoms of blocks.

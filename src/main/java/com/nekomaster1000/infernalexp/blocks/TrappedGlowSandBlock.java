@@ -14,8 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 
 import java.util.Random;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class TrappedGlowSandBlock extends GlowSandBlock {
     public TrappedGlowSandBlock(int dustColorIn, Properties properties) {
         super(dustColorIn, properties);
@@ -28,7 +26,7 @@ public class TrappedGlowSandBlock extends GlowSandBlock {
     public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) { }
 
     @Override
-    public void stepOn(Level world, BlockPos pos, Entity entity) {
+    public void stepOn(Level world, BlockPos pos, BlockState state, Entity entity) {
         // Check if the world is the server
         if (!world.isClientSide() && entity.getType() != IEEntityTypes.BLINDSIGHT.get()) {
 

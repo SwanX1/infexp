@@ -16,15 +16,17 @@ import java.util.List;
 
 public class IECarvers {
 
-	public static List<WorldCarver<ProbabilityFeatureConfiguration>> carvers = new ArrayList<>();
+	public static List<WorldCarver<CarverConfiguration>> carvers = new ArrayList<>();
 
 	// Carvers
-	public static final WorldCarver<ProbabilityFeatureConfiguration> GLOWSTONE_RAVINE = registerWorldCarver("glowstone_ravine", new GlowstoneRavineCarver(ProbabilityFeatureConfiguration.CODEC));
+    // TODO: fix
+	// public static final WorldCarver<CarverConfiguration> GLOWSTONE_RAVINE = registerWorldCarver("glowstone_ravine", new GlowstoneRavineCarver(ProbabilityFeatureConfiguration.CODEC));
 
 	// Configured Carvers
-	public static final ConfiguredWorldCarver<ProbabilityFeatureConfiguration> CONFIGURED_GLOWSTONE_RAVINE = registerConfiguredCarver("glowstone_ravine", GLOWSTONE_RAVINE.configured(new ProbabilityFeatureConfiguration(0.1f)));
+    // TODO: fix
+	// public static final ConfiguredWorldCarver<CarverConfiguration> CONFIGURED_GLOWSTONE_RAVINE = registerConfiguredCarver("glowstone_ravine", GLOWSTONE_RAVINE.configured(new ProbabilityFeatureConfiguration(0.1f)));
 
-    private static WorldCarver<ProbabilityFeatureConfiguration> registerWorldCarver(String registryName, WorldCarver<ProbabilityFeatureConfiguration> carver) {
+    private static WorldCarver<CarverConfiguration> registerWorldCarver(String registryName, WorldCarver<CarverConfiguration> carver) {
         ResourceLocation resourceLocation = new ResourceLocation(InfernalExpansion.MOD_ID, registryName);
 
 		if (Registry.CARVER.keySet().contains(resourceLocation))

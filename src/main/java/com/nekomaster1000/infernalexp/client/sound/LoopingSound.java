@@ -29,7 +29,7 @@ public abstract class LoopingSound<E extends Entity> extends AbstractTickableSou
 			this.x = (float) this.entity.getX();
 			this.y = (float) this.entity.getY();
 			this.z = (float) this.entity.getZ();
-			float f = Mth.sqrt(Entity.getHorizontalDistanceSqr(this.entity.getDeltaMovement()));
+			float f = Mth.sqrt((float) this.entity.getDeltaMovement().horizontalDistanceSqr());
 			if ((double) f >= 0.01D) {
 				this.pitch = Mth.lerp(Mth.clamp(f, this.getMinPitch(), this.getMaxPitch()), this.getMinPitch(), this.getMaxPitch());
 				this.volume = Mth.lerp(Mth.clamp(f, 0.0F, 0.5F), 0.0F, 1.2F);

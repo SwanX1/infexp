@@ -24,7 +24,7 @@ import com.nekomaster1000.infernalexp.init.IEPotions;
 import com.nekomaster1000.infernalexp.init.IEProcessors;
 import com.nekomaster1000.infernalexp.init.IESoundEvents;
 import com.nekomaster1000.infernalexp.init.IEStructures;
-import com.nekomaster1000.infernalexp.init.IETileEntityTypes;
+import com.nekomaster1000.infernalexp.init.IEBlockEntityTypes;
 import com.nekomaster1000.infernalexp.mixin.common.WorldCarverAccessor;
 import com.nekomaster1000.infernalexp.network.IENetworkHandler;
 import com.nekomaster1000.infernalexp.util.CompatibilityQuark;
@@ -57,7 +57,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,7 +92,7 @@ public class InfernalExpansion {
         IEPotions.register(modEventBus);
         IEEntityTypes.register(modEventBus);
         IEPaintings.register(modEventBus);
-        IETileEntityTypes.register(modEventBus);
+        IEBlockEntityTypes.register(modEventBus);
         IEBiomes.register(modEventBus);
         IELootModifiers.register(modEventBus);
 

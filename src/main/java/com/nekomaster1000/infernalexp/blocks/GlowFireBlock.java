@@ -11,8 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class GlowFireBlock extends BaseFireBlock {
 
     public GlowFireBlock(Properties builder) {
@@ -28,7 +26,7 @@ public class GlowFireBlock extends BaseFireBlock {
     }
 
     public static boolean isGlowFireBase(Block block) {
-            return block.is(IETags.Blocks.GLOW_FIRE_BASE_BLOCKS);
+            return IETags.Blocks.GLOW_FIRE_BASE_BLOCKS.contains(block);
     }
 
     protected boolean canBurn(BlockState stateIn) {

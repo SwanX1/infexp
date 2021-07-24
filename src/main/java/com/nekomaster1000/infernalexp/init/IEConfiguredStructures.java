@@ -22,7 +22,7 @@ public class IEConfiguredStructures {
 		if (BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.keySet().contains(resourceLocation))
 			throw new IllegalStateException("Configured Feature ID: \"" + resourceLocation.toString() + "\" is already in the registry!");
 
-		FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(structureFeature.feature.getStructure(), structureFeature);
+		FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(structureFeature.feature, structureFeature);
 
 		return Registry.register(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, resourceLocation, structureFeature);
 	}
